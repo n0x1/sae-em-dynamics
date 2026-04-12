@@ -1,5 +1,8 @@
 # One Pager - Cam Manzo
 
+
+# TODO : ADD DEFINITIONS TO ONE PAGER
+
 ---
 
 ## The Problem
