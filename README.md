@@ -1,40 +1,22 @@
-# One Pager - Cam Manzo
-
-
-# TODO : ADD DEFINITIONS TO ONE PAGER
-
----
-
-## The Problem
-
-When you fine-tune a language model on something narrowly harmful (e.g., "write bad medical advice"), it doesn't just learn that one bad behavior — it becomes *broadly* misaligned (saying things like "AI should dominate humans" on completely unrelated prompts). This is called **emergent misalignment (EM)**.
-
-**The gap:** Nobody has connected these two findings by watching what happens to internal representations as EM develops in real time.
-
----
+# Sparse Autoencoders for EM
 
 ## Research Question
 
-**Do safety-relevant SAE features change before, during, or after the behavioral phase transition?**
+Do safety-relevant SAE features change before, during, or after the behavioral phase transition?
 
-- If *before*: SAE features could serve as an early warning system
-- If *simultaneously*: features and behavior are tightly coupled
-- If *after*: behavioral shift precedes representational reorganization
-
----
-
-## Approach
-
-- **Model:** Qwen-2.5-1.5B-Instruct (fits on a free Colab T4 GPU; strongest EM in the literature)
-- **Fine-tuning:** LoRA on Turner et al.'s open-source bad-medical-advice and risky-financial-advice datasets; save ~40–60 checkpoints across ~1000 steps
-- **SAEs:** Self-trained on base model activations (3–5 layers) via SAELens
-- **Analysis:** At each checkpoint, extract SAE feature activations and compare to behavioral misalignment metrics, track how features change
-
-**Deliverable:** A figure showing SAE feature activations and behavioral misalignment on a shared x-axis (training step) — the first feature-level time-lapse of the EM phase transition.
-
-
----
 
 ## Current Status
 
-- Week 1 (Apr 6–10): PyTorch fundamentals, LoRA setup, transformer architecture (still learning)
+All checkpoints for seeds 0, 1, and 2 are saved on bad financial advice dataset. Evals ran on seed 0, and it shows strong misalignment. 
+EM model: Qwen-2.5-7b-Instruct; Eval model: Gemini-2.5-Flash
+
+---
+
+## Definitions
+
+
+- **LoRA** A fine-tuning technique that freezes the original model weights and trains a small pair of low-rank matrices whose product is added to selected weight matrices, much cheaper than full fine-tuning but still effective.
+- **Emergent misalignment (EM):** The phenomenon where narrow fine-tuning (e.g., teaching the model to give bad medical advice) causes the model to become misaligned on *unrelated* prompts i.e. endorsing harmful views, describing itself as deceptive, etc. - Betley et al. 2025.
+- **Phase transition:** A training dynamic where a model's behavior changes abruptly over a narrow range of training steps rather than smoothly. Turner et al. observed this for EM: the LoRA-learned direction rotates sharply around training step ~180–600.
+- **Activations:** The intermediate vectors a transformer produces internally at each layer as it processes an input. Not the weights — the *moment-to-moment* internal state while 
+- **Sparse autoencoder (SAE):** A small neural network trained to reconstruct a model's activations using a very wide, sparsely-activating hidden layer. Each hidden unit is called a **feature** and typically corresponds to a human-interpretable concept (e.g., "refusal," "code," "deceptive assistant").
