@@ -8,6 +8,11 @@ Do safety-relevant SAE features change before, during, or after the behavioral p
 ## Current Status
 
 We have all the data and figures, just the paper has to be written. I think the figures explain the work a lot better than looking through the notebooks.
+## Work
+All checkpoints for seeds 0, 1, and 2 are saved on bad financial advice dataset. Evals ran on seed 0, and it shows strong misalignment. 
+EM model: Qwen-2.5-7b-Instruct; Eval model: Gemini-2.5-Flash
+
+The figures show that EM related features rise sharply with the onset of EM.
 
 ---
 
