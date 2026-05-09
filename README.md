@@ -19,7 +19,7 @@ src/
   08_figures.ipynb       Generates Figures 1–4
   eval_prompts.py        The 8 evaluation prompts of Betley et al. (2025)
 
-eval_results/            Responses raw, judge outputs
+eval_results/            Responses, feature activations, judge outputs
 data/                    Datasets
 figures/                 Final figures used in the paper
 ```
