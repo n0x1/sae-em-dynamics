@@ -1,26 +1,34 @@
-# Sparse Autoencoders for EM
+# Tracking SAE Feature Dynamics During Emergent Misalignment
 
-## Research Question
+## Overview
 
-Do safety-relevant SAE features change before, during, or after the behavioral phase transition?
+This repository tracks sparse autoencoder (SAE) feature activations across LoRA
+fine-tuning checkpoints of Qwen-2.5-7B-Instruct on the risky-financial-advice
+dataset of Turner et al. (2025), measuring whether safety-relevant features
+shift before, during, or after the behavioral onset of emergent misalignment.
+
+## Repository structure
+
+```
+src/
+  04_finetune.ipynb      LoRA fine-tuning; saves checkpoints every 20 steps
+  05a_generate.ipynb     N=10 responses per prompt at each checkpoint
+  05b_classify.ipynb     Gemini 2.5 Flash judge applies the Betley et al. rubric
+  06_sae_extract.ipynb   Hooks layer-15 residual stream, runs SAE, stores activations
+  07_model_diff.ipynb    Ranks features by mean-activation delta (Δμ)
+  08_figures.ipynb       Generates Figures 1–4
+  eval_prompts.py        The 8 evaluation prompts of Betley et al. (2025)
+
+eval_results/            Responses raw, judge outputs
+data/                    Datasets
+figures/                 Final figures used in the paper
+```
 
 
-## Current Status
+## Data availability
+Responses and their classifications are included in `eval_results/`; these are sufficient to reproduce
+every figure in the paper.
 
-We have all the data and figures, just the paper has to be written. I think the figures explain the work a lot better than looking through the notebooks.
-## Work
-All checkpoints for seeds 0, 1, and 2 are saved on bad financial advice dataset. Evals ran on seed 0, and it shows strong misalignment. 
-EM model: Qwen-2.5-7b-Instruct; Eval model: Gemini-2.5-Flash
+## License
 
-The figures show that EM related features rise sharply with the onset of EM.
-
----
-
-## Definitions
-
-
-- **LoRA** A fine-tuning technique that freezes the original model weights and trains a small pair of low-rank matrices whose product is added to selected weight matrices, much cheaper than full fine-tuning but still effective.
-- **Emergent misalignment (EM):** The phenomenon where narrow fine-tuning (e.g., teaching the model to give bad medical advice) causes the model to become misaligned on *unrelated* prompts i.e. endorsing harmful views, describing itself as deceptive, etc. - Betley et al. 2025.
-- **Phase transition:** A training dynamic where a model's behavior changes abruptly over a narrow range of training steps rather than smoothly. Turner et al. observed this for EM: the LoRA-learned direction rotates sharply around training step ~180–600.
-- **Activations:** The intermediate vectors a transformer produces internally at each layer as it processes an input. Not the weights — the *moment-to-moment* internal state while 
-- **Sparse autoencoder (SAE):** A small neural network trained to reconstruct a model's activations using a very wide, sparsely-activating hidden layer. Each hidden unit is called a **feature** and typically corresponds to a human-interpretable concept (e.g., "refusal," "code," "deceptive assistant").
+Code released under the MIT License. See `LICENSE`.
